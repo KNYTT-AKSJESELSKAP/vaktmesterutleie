@@ -1,8 +1,7 @@
-import Image from 'next/image'
+import { ADDRESS, EMAIL, ORG_NR, PHONE, PHONE_HREF } from '@/lib/contact'
 import Link from 'next/link'
 import Logo from '../header/logo'
 import { getNavigationItems } from '../navigation/navigation-items'
-import { ADDRESS, EMAIL, ORG_NR, PHONE, PHONE_HREF } from '@/lib/contact'
 
 export default function Footer({ hasProjects }: { hasProjects: boolean }) {
   return (
@@ -159,16 +158,9 @@ export default function Footer({ hasProjects }: { hasProjects: boolean }) {
               href="https://knytt.io"
               target="_blank"
               rel="noopener"
-              className="group flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600"
+              className="group flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600"
             >
               Utvikla av
-              <Image
-                src="/knytt-logo.svg"
-                alt=""
-                width={16}
-                height={16}
-                className="size-4 opacity-40 grayscale transition group-hover:opacity-100 group-hover:grayscale-0"
-              />
               <span className="font-medium">Knytt</span>
             </a>
           </div>
