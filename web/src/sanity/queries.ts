@@ -5,7 +5,17 @@ export const SERVICE_QUERY = defineQuery(
 )
 
 export const CATEGORY_QUERY = defineQuery(
-  `*[_type == "category"]{_id, slug, title, image}`
+  `*[_type == "category"] | order(title asc){
+    _id,
+    slug,
+    title,
+    "count": count(*[_type == "rental" && references(^._id)]),
+    "cover": *[_type == "rental" && references(^._id) && defined(image.image)][0].image
+  }`
+)
+
+export const CATEGORY_BY_SLUG_QUERY = defineQuery(
+  `*[_type == "category" && slug.current == $slug][0]{_id, slug, title}`
 )
 
 export const RENTAL_BY_CATEGORY_QUERY = defineQuery(
@@ -27,6 +37,20 @@ export const PROJECT_QUERY = `*[_type == "project"] | order(date desc) {
   afterImage,
   beforeImage
 }`
+
+export const LATEST_PROJECTS_QUERY = `*[_type == "project" && defined(slug.current)] | order(date desc)[0...3] {
+  _id,
+  title,
+  slug,
+  category,
+  location,
+  date,
+  description,
+  afterImage,
+  beforeImage
+}`
+
+export const PROJECT_COUNT_QUERY = `count(*[_type == "project" && defined(slug.current)])`
 
 export const PROJECT_BY_SLUG_QUERY = `*[_type == "project" && slug.current == $slug][0] {
   _id,

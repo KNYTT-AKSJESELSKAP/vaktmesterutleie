@@ -1,45 +1,54 @@
 import { client } from '@/sanity/client'
-import { urlFor } from '@/sanity/image'
 import { SERVICE_QUERY } from '@/sanity/queries'
 import { Service } from '@/sanity/types'
-import { ArrowRight } from 'lucide-react'
-import { Image } from 'next-sanity/image'
 import Link from 'next/link'
 
+// Brukast når ingen tenester er lagt inn i Sanity enno.
+const FALLBACK: Service[] = [
+  {
+    _id: 'vaktmeister',
+    title: 'Vaktmeistertenester',
+    description:
+      'Vedlikehald, reparasjonar og småjobbar — utført av fagfolk med tømrarbakgrunn.',
+    href: '/kontakt?tag=vaktmeistertenester',
+  },
+  {
+    _id: 'utleige',
+    title: 'Utstyrsutleige',
+    description:
+      'Tilhengarar, stillas, stigar og verktøy til gode prisar. Hent sjølv eller avtal levering.',
+    href: '/utleige',
+    cta: 'Sjå katalog',
+  },
+  {
+    _id: 'drone',
+    title: 'Droneinspeksjon',
+    description:
+      'Trygg og rask inspeksjon av tak og fasadar utan stillas eller lift.',
+    href: '/kontakt?tag=drone',
+  },
+]
+
 export default async function ServicesCard() {
-  const service: Service[] = await client.fetch(SERVICE_QUERY)
+  const data: Service[] = await client.fetch(SERVICE_QUERY)
+  const services = data.length > 0 ? data : FALLBACK
+
   return (
-    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {service.map((item) => (
+    <ul className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      {services.map((item) => (
         <li
           key={item._id}
-          className="group relative aspect-[4/3] md:aspect-square overflow-hidden rounded-md bg-neutral-900"
+          className="group relative flex flex-col gap-4 rounded-lg border bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg"
         >
-          {item.image.image && (
-            <Image
-              src={urlFor(item.image.image).width(800).url()}
-              fill
-              className="object-cover brightness-75 transition group-hover:scale-105 group-focus-within:scale-105"
-              alt={
-                item.image.alt ? (item.image.alt as string) : 'Alternativ tekst'
-              }
-            />
-          )}
-
-          <div className="absolute inset-0 flex flex-col gap-1 justify-end p-6 text-white bg-gradient-to-t from-black/90 to-transparent">
-            <div className="flex items-center justify-between">
-              <p className="text-lg">{item.title}</p>
-              <ArrowRight
-                size={16}
-                className="transition group-hover:translate-x-1 group-focus-within:translate-x-1"
-              />
-            </div>
-            <p className="text-xs">{item.description}</p>
-          </div>
-
+          <p className="card-title">{item.title}</p>
+          <p className="card-subtitle leading-relaxed">{item.description}</p>
+          <span className="mt-auto flex items-center gap-2 pt-2 text-sm font-semibold text-neutral-900">
+            {item.cta ??
+              (item.href === '/utleige' ? 'Sjå katalog' : 'Be om tilbod')}
+          </span>
           <Link
-            className="absolute inset-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-inset"
-            href={item.href ?? '#'}
+            className="absolute inset-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900"
+            href={item.href || '/kontakt'}
             aria-label={`Gå til ${item.title}`}
           />
         </li>

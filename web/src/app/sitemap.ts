@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     '',
     '/utleige',
-    '/prosjekt',
+    ...(projects.length > 0 ? ['/prosjekt'] : []),
     '/om-oss',
     '/kontakt',
   ].map((path) => ({
@@ -25,10 +25,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: p.date ? new Date(p.date) : new Date(),
   }))
 
-  const categoryPages: MetadataRoute.Sitemap = categories.map((c) => ({
-    url: `${BASE}/utleige/${c.slug.current}`,
-    lastModified: new Date(),
-  }))
+  const categoryPages: MetadataRoute.Sitemap = categories
+    .filter((c) => (c.count ?? 0) > 0)
+    .map((c) => ({
+      url: `${BASE}/utleige/${c.slug.current}`,
+      lastModified: new Date(),
+    }))
 
   return [...staticPages, ...projectPages, ...categoryPages]
 }

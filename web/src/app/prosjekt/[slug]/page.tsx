@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/comparison'
 import { urlFor } from '@/sanity/image'
 import { Image } from 'next-sanity/image'
-import { ArrowRight, MapPin, Tag, Calendar, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -74,7 +73,7 @@ export default async function ProjectPage({
           href="/prosjekt"
           className="mb-6 inline-flex items-center gap-1 text-sm text-neutral-500 hover:text-neutral-900"
         >
-          <ArrowLeft size={16} /> <span>Tilbake</span>
+          ← Tilbake
         </Link>
       </div>
 
@@ -113,20 +112,17 @@ export default async function ProjectPage({
         {/* metadata som chips */}
         <div className="mt-8 flex flex-wrap items-center gap-2">
           {project.category && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-sm font-medium text-neutral-700">
-              <Tag size={14} />
+            <span className="rounded-full bg-neutral-100 px-3 py-1 text-sm font-medium text-neutral-700">
               {CATEGORY_LABELS[project.category] ?? project.category}
             </span>
           )}
           {project.location && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-sm font-medium text-neutral-700">
-              <MapPin size={14} />
+            <span className="rounded-full bg-neutral-100 px-3 py-1 text-sm font-medium text-neutral-700">
               {project.location}
             </span>
           )}
           {project.date && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-sm font-medium text-neutral-700">
-              <Calendar size={14} />
+            <span className="rounded-full bg-neutral-100 px-3 py-1 text-sm font-medium text-neutral-700">
               {new Date(project.date).toLocaleDateString('nn-NO', {
                 month: 'long',
                 year: 'numeric',
@@ -157,7 +153,7 @@ export default async function ProjectPage({
               href="/kontakt"
               className="inline-flex items-center gap-2 rounded-md bg-neutral-900 px-5 py-3 text-white transition hover:bg-neutral-800"
             >
-              Ta kontakt <ArrowRight size={16} />
+              Ta kontakt
             </Link>
           </Button>
         </div>

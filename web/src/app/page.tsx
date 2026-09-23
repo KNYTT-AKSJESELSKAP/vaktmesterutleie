@@ -1,32 +1,53 @@
 import CTA from '@/components/cta'
-import Container from '@/components/wrapper/container'
 import Section from '@/components/wrapper/section'
 import Hero from '@/features/home/components/hero'
+import LatestProjects from '@/features/home/components/latest-projects'
 import Services from '@/features/home/components/services'
+import WhyUs from '@/features/home/components/why-us'
+import { client } from '@/sanity/client'
+import { LATEST_PROJECTS_QUERY } from '@/sanity/queries'
+import { Project } from '@/sanity/types'
 import { Metadata } from 'next'
+
 export const metadata: Metadata = {
   title: 'Heim',
   description:
-    'Vaktmeistertenester, utstyrleige og droneinspeksjon i Osterøy- og Bergenregionen. Uforpliktande tilbod innan 24 timar.',
+    'Vaktmeistertenester, utstyrleige og droneinspeksjon i Osterøy- og Bergenregionen. Raskt og uforpliktande tilbod.',
 }
-export default function Page() {
+
+// "Siste jobbar" visast berre når det finst minst tre prosjekt.
+const MIN_PROJECTS = 3
+
+export default async function Page() {
+  const projects: Project[] = await client.fetch(LATEST_PROJECTS_QUERY)
+
   return (
-    <Section className="flex flex-col gap-20">
-      <Container className="flex items-center bg-gray-100 py-40 border-y">
+    <div className="flex flex-col">
+      <div className="py-16 md:py-24">
         <Section constraint>
           <Hero />
         </Section>
-      </Container>
+      </div>
 
-      <Section constraint>
+      <Section constraint className="py-20">
         <Services />
       </Section>
+
+      <Section constraint className="pb-20">
+        <WhyUs />
+      </Section>
+
+      {projects.length >= MIN_PROJECTS && (
+        <Section constraint className="py-20">
+          <LatestProjects projects={projects} />
+        </Section>
+      )}
+
       <CTA
         subtitle="klar til å starte?"
-        title="Fortel oss kva du treng —
-me ordnar resten"
-        description="Enten du treng ein handverkar, leige utstyr eller ein droneinspeksjon"
+        title="Fortel oss kva du treng — me ordnar resten"
+        description="Enten du treng ein handverkar, leige utstyr eller ein droneinspeksjon."
       />
-    </Section>
+    </div>
   )
 }

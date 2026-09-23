@@ -4,10 +4,10 @@ export type Service = {
   _id: string
   href: string
   title: string
-  image: ImageWithAlt
-  tags: string[]
+  image?: ImageWithAlt | null
+  tags?: string[]
   description: string
-  cta: string
+  cta?: string | null
 }
 
 export type ImageWithAlt = {
@@ -22,14 +22,15 @@ type Slug = {
 export type Category = {
   _id: string
   title: string
-  image: ImageWithAlt
   slug: Slug
+  count?: number
+  cover?: ImageWithAlt | null
 }
 
 export type Rental = {
   _id: string
   title: string
-  image: ImageWithAlt
+  image: ImageWithAlt | null
   specs: string | null
   available: boolean
   pricePerDay: number | null

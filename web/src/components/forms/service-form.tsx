@@ -1,5 +1,6 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Field, FieldGroup, FieldLabel } from '../ui/field'
@@ -7,9 +8,8 @@ import { Textarea } from '../ui/textarea'
 import { NativeSelect, NativeSelectOption } from '../ui/native-select'
 import Container from '../wrapper/container'
 import FormInput from './form-input'
-import FormButton from './form-button'
+import FormButton, { FormStatus } from './form-button'
 import { sendMail } from '@/features/api/send-mail'
-import { toast } from 'sonner'
 
 const schema = z.object({
   name: z.string().min(1, 'Namn er påkravd'),
@@ -22,6 +22,7 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>
 
 export default function ServiceForm() {
+  const [status, setStatus] = useState<FormStatus>('idle')
   const {
     register,
     handleSubmit,
@@ -32,14 +33,24 @@ export default function ServiceForm() {
   })
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
-    await sendMail({
-      type: 'vaktmeister',
-      ...data,
-    })
-    toast.success('Takk! Me tek kontakt så snart som mogleg.')
-
-    reset()
+    setStatus('sending')
+    try {
+      await sendMail({
+        type: 'vaktmeister',
+        ...data,
+      })
+      setStatus('sent')
+      reset()
+    } catch {
+      setStatus('error')
+    }
   }
+
+  useEffect(() => {
+    if (status !== 'sent') return
+    const timer = setTimeout(() => setStatus('idle'), 4000)
+    return () => clearTimeout(timer)
+  }, [status])
   return (
     <Container className="bg-white p-4 rounded-md border">
       <Container className="mb-6">
@@ -111,7 +122,7 @@ export default function ServiceForm() {
           )}
         </Field>
 
-        <FormButton label="Send førespurnad" />
+        <FormButton label="Send førespurnad" status={status} />
       </form>
     </Container>
   )

@@ -4,7 +4,6 @@ import ServiceForm from './service-form'
 import RentalForm from './rental-form'
 import Container from '../wrapper/container'
 import { Button } from '../ui/button'
-import { Truck, Wrench } from 'lucide-react'
 export default function FormWrapper({ tag }: { tag?: string }) {
   const [showForm, setShowForm] = useState(!!tag)
 
@@ -16,7 +15,6 @@ export default function FormWrapper({ tag }: { tag?: string }) {
           onClick={() => setShowForm(false)}
           variant={!showForm ? 'outline' : 'secondary'}
         >
-          <Truck />
           <span> Utleigeførespurnad</span>
         </Button>
         <Button
@@ -24,7 +22,6 @@ export default function FormWrapper({ tag }: { tag?: string }) {
           onClick={() => setShowForm(true)}
           variant={showForm ? 'outline' : 'secondary'}
         >
-          <Wrench />
           <span> Vaktmeister / Drone</span>
         </Button>
       </Container>

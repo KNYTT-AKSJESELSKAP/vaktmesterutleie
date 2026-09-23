@@ -2,8 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Button } from '../ui/button'
@@ -12,10 +11,9 @@ import { Field, FieldGroup, FieldLabel } from '../ui/field'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Textarea } from '../ui/textarea'
 import FormInput from './form-input'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Container from '../wrapper/container'
-import FormButton from './form-button'
-import { toast } from 'sonner'
+import FormButton, { FormStatus } from './form-button'
 import { sendMail } from '@/features/api/send-mail'
 
 const schema = z.object({
@@ -29,9 +27,9 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>
 
 export default function RentalForm() {
-  const router = useRouter()
   const [fromDate, setFromDate] = useState<Date>()
   const [toDate, setToDate] = useState<Date>()
+  const [status, setStatus] = useState<FormStatus>('idle')
   const params = useSearchParams()
   const key = params.get('utstyr')
   const {
@@ -47,18 +45,28 @@ export default function RentalForm() {
   })
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
-    await sendMail({
-      type: 'utleige',
-      ...data,
-      fraDato: fromDate,
-      tilDato: toDate,
-    })
-
-    toast.success('Takk! Me tek kontakt så snart som mogleg.')
-    reset()
-    setFromDate(undefined)
-    setToDate(undefined)
+    setStatus('sending')
+    try {
+      await sendMail({
+        type: 'utleige',
+        ...data,
+        fraDato: fromDate,
+        tilDato: toDate,
+      })
+      setStatus('sent')
+      reset()
+      setFromDate(undefined)
+      setToDate(undefined)
+    } catch {
+      setStatus('error')
+    }
   }
+
+  useEffect(() => {
+    if (status !== 'sent') return
+    const timer = setTimeout(() => setStatus('idle'), 4000)
+    return () => clearTimeout(timer)
+  }, [status])
   return (
     <Container className="bg-white p-4 rounded-md border">
       <Container className="mb-6">
@@ -115,17 +123,10 @@ export default function RentalForm() {
                   variant="outline"
                   className="justify-start font-normal text-left"
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
                   {fromDate ? format(fromDate, 'dd.MM.yyyy') : 'dd/mm/yyyy'}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={fromDate}
-                  onSelect={setFromDate}
-                />
-              </PopoverContent>
+              <PopoverContent className="w-auto p-0"></PopoverContent>
             </Popover>
           </Field>
 
@@ -137,17 +138,10 @@ export default function RentalForm() {
                   variant="outline"
                   className="justify-start font-normal text-left"
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
                   {toDate ? format(toDate, 'dd.MM.yyyy') : 'dd/mm/yyyy'}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={toDate}
-                  onSelect={setToDate}
-                />
-              </PopoverContent>
+              <PopoverContent className="w-auto p-0"></PopoverContent>
             </Popover>
           </Field>
         </FieldGroup>
@@ -161,7 +155,7 @@ export default function RentalForm() {
           />
         </Field>
 
-        <FormButton label="Send utleigeførespurnad" />
+        <FormButton label="Send utleigeførespurnad" status={status} />
       </form>
     </Container>
   )

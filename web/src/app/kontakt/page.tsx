@@ -1,66 +1,39 @@
 import FormWrapper from '@/components/forms/form-wrapper'
 import PageHeader from '@/components/page-header'
-import Container from '@/components/wrapper/container'
 import Section from '@/components/wrapper/section'
 import ContactInfo from '@/features/kontakt/components/contact-info'
 import { Metadata } from 'next'
+
 export const metadata: Metadata = {
   title: 'Kontakt',
   description: 'Ta kontakt for uforpliktande tilbod.',
 }
 
-type SearchParams = {
-  searchParams: {
-    tag: string
-  }
+type Props = {
+  searchParams: Promise<{ tag?: string }>
 }
-export default async function Page({ searchParams }: SearchParams) {
+
+export default async function Page({ searchParams }: Props) {
   const { tag } = await searchParams
 
-  if (!tag)
-    return (
-      <Section className="flex flex-col gap-14 min-h-screen pb-40">
-        <Container className="bg-white border-b py-20">
-          <Section constraint>
-            {' '}
-            <PageHeader
-              label="kontakt oss"
-              title="Me svarer raskt
-"
-              subtitle="Fyll ut skjemaet nedanfor eller ring oss direkte."
-            />
-          </Section>
-        </Container>
-        <Section constraint>
-          <Container className="flex py-4 gap-8 justify-between">
-            <FormWrapper />
-            <div className="h-full hidden md:block">
-              <ContactInfo />
-            </div>
-          </Container>
-        </Section>
-      </Section>
-    )
   return (
     <Section className="flex flex-col gap-14 min-h-screen pb-40">
-      <Container className="bg-white border-b py-20">
+      <div className="bg-white border-b py-20">
         <Section constraint>
-          {' '}
           <PageHeader
             label="kontakt oss"
-            title="Me svarer raskt
-"
+            title="Me svarer raskt"
             subtitle="Fyll ut skjemaet nedanfor eller ring oss direkte."
           />
         </Section>
-      </Container>
+      </div>
       <Section constraint>
-        <Container className="flex py-4 gap-8 justify-between">
+        <div className="flex flex-col gap-10 py-4 md:flex-row md:justify-between md:gap-8">
           <FormWrapper tag={tag} />
-          <div className="h-full hidden md:block">
+          <div className="md:w-80 md:shrink-0">
             <ContactInfo />
           </div>
-        </Container>
+        </div>
       </Section>
     </Section>
   )

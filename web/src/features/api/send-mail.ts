@@ -1,6 +1,7 @@
 export async function sendMail<T>(body: T) {
-  await fetch('/api/send', {
+  const res = await fetch('/api/send', {
     method: 'POST',
     body: JSON.stringify(body),
   })
+  if (!res.ok) throw new Error('Kunne ikkje sende førespurnaden')
 }

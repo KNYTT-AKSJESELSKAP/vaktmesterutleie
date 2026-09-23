@@ -1,7 +1,6 @@
+import { PHONE_HREF } from '@/lib/contact'
 import Link from 'next/link'
 import { Button } from '../ui/button'
-import Container from '../wrapper/container'
-import { Send, Phone, ArrowRight } from 'lucide-react'
 
 type Props = {
   subtitle: string
@@ -10,25 +9,21 @@ type Props = {
 }
 export default function CTA({ subtitle, title, description }: Props) {
   return (
-    <Container className="flex items-center bg-gray-100 py-40 border-y min-h-[50dvh]">
-      <Container className="max-w-xl mx-auto  text-center flex flex-col gap-4">
-        <p className="uppercase link-brand">{subtitle}</p>
-        <p className="hero-title">{title}</p>
-        <p>{description}</p>
+    <section className="border-t bg-white px-4 py-24 md:py-32">
+      <div className="mx-auto flex max-w-xl flex-col gap-4 text-center">
+        <p className="link-brand uppercase">{subtitle}</p>
+        <h2 className="hero-title text-balance">{title}</h2>
+        <p className="subtitle">{description}</p>
 
-        <Container className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full px-4">
-          <Button asChild className="w-full sm:w-auto">
-            <Link className="flex gap-4 px-4" href="/kontakt">
-              <span>Send førespurnad</span>
-            </Link>
+        <div className="mt-2 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
+          <Button asChild className="w-full px-4 sm:w-auto">
+            <Link href="/kontakt">Send førespurnad</Link>
           </Button>
-          <Button variant="outline" asChild className="w-full sm:w-auto">
-            <Link className="flex gap-4 px-4" href="tel:+4747177466">
-              <span>Ring oss</span>
-            </Link>
+          <Button variant="outline" asChild className="w-full px-4 sm:w-auto">
+            <Link href={PHONE_HREF}>Ring oss</Link>
           </Button>
-        </Container>
-      </Container>
-    </Container>
+        </div>
+      </div>
+    </section>
   )
 }

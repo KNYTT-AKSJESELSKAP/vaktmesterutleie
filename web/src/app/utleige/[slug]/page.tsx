@@ -1,75 +1,65 @@
 import PageBreadcrumb from '@/components/breadcrumb'
-import CardContainer from '@/components/card/card-container'
+import EmptyState from '@/components/empty-state'
 import PageHeader from '@/components/page-header'
-import CardSkeleton from '@/components/skeleton'
-import Container from '@/components/wrapper/container'
 import Section from '@/components/wrapper/section'
 import RentalCard from '@/features/utleige/components/utleige/rental-card'
 import { client } from '@/sanity/client'
-import { RENTAL_BY_CATEGORY_QUERY } from '@/sanity/queries'
-import { Rental } from '@/sanity/types'
+import {
+  CATEGORY_BY_SLUG_QUERY,
+  RENTAL_BY_CATEGORY_QUERY,
+} from '@/sanity/queries'
+import { Category, Rental } from '@/sanity/types'
 import { Metadata } from 'next'
-import Link from 'next/link'
-import { Suspense } from 'react'
-export const metadata: Metadata = {
-  title: 'Utleige',
-  description: 'Lei utstyr frå Vaktmesterutleie.',
-}
+import { notFound } from 'next/navigation'
+
 type Params = {
-  params: {
-    slug: string
+  params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { slug } = await params
+  const category: Category | null = await client.fetch(CATEGORY_BY_SLUG_QUERY, {
+    slug,
+  })
+  if (!category) return { title: 'Utleige' }
+  return {
+    title: `${category.title} — utleige`,
+    description: `Lei ${category.title.toLowerCase()} frå Vaktmesterutleie på Osterøy. Hent sjølv eller avtal levering.`,
   }
 }
+
 export default async function Page({ params }: Params) {
   const { slug } = await params
-  const items: Rental[] = await client.fetch(RENTAL_BY_CATEGORY_QUERY, { slug })
+  const [category, items]: [Category | null, Rental[]] = await Promise.all([
+    client.fetch(CATEGORY_BY_SLUG_QUERY, { slug }),
+    client.fetch(RENTAL_BY_CATEGORY_QUERY, { slug }),
+  ])
 
-  if (items.length === 0) {
-    return (
-      <Section className="flex flex-col gap-14 min-h-screen pb-40">
-        <Container className="bg-white border-b py-20">
-          <Section constraint>
-            <PageHeader
-              label="utleigekatalog"
-              title="Lei utstyr enkelt og rimeleg"
-              subtitle="Tilhengarar, stillas, stigar og verktøy til gode prisar. Hent sjølv eller avtal levering."
-            />
-            <PageBreadcrumb />
-          </Section>
-        </Container>
-        <Section constraint>
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <p className="text-2xl font-semibold text-neutral-800">
-              Ingen utstyr tilgjengeleg
-            </p>
-            <Link
-              href="/kontakt"
-              className="mt-2 text-neutral-500 transition-colors hover:text-neutral-800"
-            >
-              Ta kontakt — me hjelper deg å finne det du treng.
-            </Link>
-          </div>
-        </Section>
-      </Section>
-    )
-  }
+  if (!category) notFound()
 
   return (
     <Section className="flex flex-col gap-14 min-h-screen pb-40">
-      <Container className="bg-white border-b py-20">
+      <div className="bg-white border-b py-20">
         <Section constraint>
           <PageHeader
             label="utleigekatalog"
-            title="Lei utstyr enkelt og rimeleg"
+            title={category.title}
             subtitle="Tilhengarar, stillas, stigar og verktøy til gode prisar. Hent sjølv eller avtal levering."
           />
-          <PageBreadcrumb />
+          <PageBreadcrumb title={category.title} />
         </Section>
-      </Container>
+      </div>
       <Section constraint>
-        <Suspense fallback={<CardSkeleton count={6} />}>
-          <RentalCard slug={slug} />
-        </Suspense>
+        {items.length > 0 ? (
+          <RentalCard items={items} />
+        ) : (
+          <EmptyState
+            title="Ikkje noko utstyr her enno"
+            description="Me legg inn meir utstyr fortløpande. Ta kontakt, så hjelper me deg å finne det du treng."
+            href="/kontakt"
+            cta="Send førespurnad"
+          />
+        )}
       </Section>
     </Section>
   )

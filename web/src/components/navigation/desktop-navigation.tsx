@@ -1,15 +1,19 @@
 'use client'
 import Link from 'next/link'
-import { navigationItems } from './navigation-items'
+import { NavigationItem } from './navigation-items'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
-export default function DesktopNavigation() {
+export default function DesktopNavigation({
+  items,
+}: {
+  items: NavigationItem[]
+}) {
   const pathname = usePathname()
   return (
-    <nav className="hidden md:flex justify-between">
+    <nav className="flex justify-between">
       <ul className="flex gap-1">
-        {navigationItems.map((item) => (
+        {items.map((item) => (
           <li
             className={cn(
               'text-sm text-gray-600 hover:text-gray-900 px-2 py-1 rounded-md transition hover:bg-gray-100',

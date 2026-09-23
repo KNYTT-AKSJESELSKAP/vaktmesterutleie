@@ -8,11 +8,17 @@ export default function RentalAvailability({
   return (
     <span
       className={cn(
-        'absolute top-3 right-3 z-10 px-2.5 py-0.5 rounded-full text-xs font-medium',
-        available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium shadow-sm',
+        available ? 'bg-white text-green-700' : 'bg-white text-red-600'
       )}
     >
-      {available ? 'Ledig' : 'Utleid'}
+      <span
+        className={cn(
+          'size-1.5 rounded-full',
+          available ? 'bg-green-500' : 'bg-red-500'
+        )}
+      />
+      {available ? 'Ledig' : 'Utleigd'}
     </span>
   )
 }

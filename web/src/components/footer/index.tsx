@@ -1,59 +1,35 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import { MapPin, Phone, Mail } from 'lucide-react'
+import Logo from '../header/logo'
+import { getNavigationItems } from '../navigation/navigation-items'
+import { ADDRESS, EMAIL, ORG_NR, PHONE, PHONE_HREF } from '@/lib/contact'
 
-export default function Footer() {
+export default function Footer({ hasProjects }: { hasProjects: boolean }) {
   return (
-    <footer className="border-t border-gray-100">
+    <footer className="border-t bg-white">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <p className="text-xs text-gray-400">Org.nr: 922 629 102</p>
-            </div>
+          <div className="flex flex-col gap-4">
+            <Logo variant="small" />
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Vaktmeistertenester, utstyrsutleige og droneinspeksjon i Osterøy-
+              og Bergensregionen.
+            </p>
+            <p className="text-xs text-gray-400">Org.nr: {ORG_NR}</p>
           </div>
           <div>
-            <p className="font-medium">Tenester</p>
+            <p className="font-medium">Sider</p>
             <ul className="flex flex-col gap-1 mt-3">
-              <li>
-                <Link
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                  href="/"
-                >
-                  Heim
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                  href="/utleige"
-                >
-                  Utleige
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                  href="/prosjekt"
-                >
-                  Prosjekt
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                  href="/om-oss"
-                >
-                  Om oss
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-sm text-gray-600 hover:text-gray-900"
-                  href="/kontakt"
-                >
-                  Kontakt
-                </Link>
-              </li>
+              {getNavigationItems(hasProjects).map((item) => (
+                <li key={item.id}>
+                  <Link
+                    className="text-sm text-gray-600 hover:text-gray-900"
+                    href={item.href}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -61,28 +37,26 @@ export default function Footer() {
             <p className="font-medium">Kontakt</p>
             <div className="flex flex-col gap-2">
               <div className="flex items-start gap-2 text-sm text-gray-600">
-                <MapPin className="w-4 h-4 mt-0.5  shrink-0" />
                 <span>
-                  Vevleheiane 3<br />
-                  5281 Valestrandsfossen
+                  {ADDRESS[0]}
+                  <br />
+                  {ADDRESS[1]}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Phone className="w-4 h-4  shrink-0" />
                 <a
                   className="underline text-sm text-gray-600 hover:text-gray-900"
-                  href="tel:+4747177466"
+                  href={PHONE_HREF}
                 >
-                  47 17 74 66
+                  {PHONE}
                 </a>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Mail className="w-4 h-4  shrink-0" />
                 <a
                   className="underline text-sm text-gray-600 hover:text-gray-900"
-                  href="mailto:post@vaktmesterutleie.no"
+                  href={`mailto:${EMAIL}`}
                 >
-                  post@vaktmesterutleie.no
+                  {EMAIL}
                 </a>
               </div>
             </div>
@@ -175,11 +149,29 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-gray-100">
+      <div className="border-t">
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-2">
-          <p className="text-xs text-gray-400">
-            © 2026 Sørås Vaktmesterutleie. Alle rettar reserverte.
-          </p>
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+            <p className="text-xs text-gray-400">
+              © 2026 Vaktmesterutleie. Alle rettar reserverte.
+            </p>
+            <a
+              href="https://knytt.io"
+              target="_blank"
+              rel="noopener"
+              className="group flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600"
+            >
+              Utvikla av
+              <Image
+                src="/knytt-logo.svg"
+                alt=""
+                width={16}
+                height={16}
+                className="size-4 opacity-40 grayscale transition group-hover:opacity-100 group-hover:grayscale-0"
+              />
+              <span className="font-medium">Knytt</span>
+            </a>
+          </div>
 
           <div className="flex gap-4 flex-wrap justify-center">
             <Link
