@@ -1,4 +1,5 @@
 'use client'
+import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import { Suspense, useState } from 'react'
 import ServiceForm from './service-form'
 import RentalForm from './rental-form'
@@ -22,11 +23,23 @@ export default function FormWrapper({ tag }: { tag?: string }) {
           onClick={() => setShowForm(true)}
           variant={showForm ? 'outline' : 'secondary'}
         >
-          <span> Vaktmeister / Drone</span>
+          <span> Vaktmeister</span>
         </Button>
       </Container>
       <Suspense fallback={null}>
-        <Container>{showForm ? <ServiceForm /> : <RentalForm />}</Container>
+        <MotionConfig reducedMotion="user">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={showForm ? 'service' : 'rental'}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+            >
+              {showForm ? <ServiceForm /> : <RentalForm />}
+            </motion.div>
+          </AnimatePresence>
+        </MotionConfig>
       </Suspense>
     </Container>
   )

@@ -1,9 +1,8 @@
 import { urlFor } from '@/sanity/image'
 import { Rental } from '@/sanity/types'
-import RentalAvailability from './rental-availability'
+import { ArrowRight } from 'lucide-react'
 import { Image } from 'next-sanity/image'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
 
 const formatPrice = (value: number) => value.toLocaleString('nb-NO')
 
@@ -12,28 +11,25 @@ function Price({ rental }: { rental: Rental }) {
   const week = rental.pricePerWeek ?? 0
 
   if (day <= 0 && week <= 0)
-    return (
-      <p className="text-sm font-medium text-gray-500">Pris etter avtale</p>
-    )
+    return <p className="text-base font-semibold">Pris etter avtale</p>
+
+  const main =
+    day > 0 ? { value: day, unit: 'dag' } : { value: week, unit: 'veke' }
+  const showWeek = day > 0 && week > 0
 
   return (
-    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      {day > 0 && (
-        <p>
-          <span className="text-xl font-bold">{formatPrice(day)}</span>{' '}
-          <span className="text-sm text-gray-500">kr / dag</span>
-        </p>
-      )}
-      {week > 0 && (
-        <p className={cn(day > 0 && 'text-sm text-gray-500')}>
-          <span
-            className={cn(
-              day > 0 ? 'font-semibold text-gray-700' : 'text-xl font-bold'
-            )}
-          >
-            {formatPrice(week)}
-          </span>{' '}
-          <span className="text-sm text-gray-500">kr / veke</span>
+    <div className="flex flex-col gap-1.5">
+      <p className="flex items-baseline gap-1.5 tabular-nums">
+        <span className="text-3xl font-bold leading-none tracking-tight">
+          {formatPrice(main.value)}
+        </span>
+        <span className="text-sm font-medium text-gray-500">
+          kr / {main.unit}
+        </span>
+      </p>
+      {showWeek && (
+        <p className="w-fit rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium tabular-nums text-gray-700">
+          {formatPrice(week)} kr / veke
         </p>
       )}
     </div>
@@ -41,21 +37,12 @@ function Price({ rental }: { rental: Rental }) {
 }
 
 export default function RentalCard({ items }: { items: Rental[] }) {
-  const sorted = [...items].sort((a, b) =>
-    a.available === b.available ? 0 : a.available ? -1 : 1
-  )
-
   return (
-    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {sorted.map((data) => (
+    <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((data) => (
         <li
           key={data._id}
-          className={cn(
-            'group relative flex flex-col overflow-hidden rounded-lg border bg-white transition',
-            data.available
-              ? 'hover:-translate-y-0.5 hover:shadow-lg'
-              : 'opacity-70'
-          )}
+          className="group relative flex flex-col overflow-hidden rounded-xl border bg-white transition duration-200 hover:-translate-y-0.5 hover:shadow-lg"
         >
           <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
             {data.image?.image ? (
@@ -71,36 +58,30 @@ export default function RentalCard({ items }: { items: Rental[] }) {
                 <span className="text-xs text-gray-400">Bilete kjem snart</span>
               </div>
             )}
-            <div className="absolute left-3 top-3">
-              <RentalAvailability available={data.available} />
-            </div>
           </div>
 
-          <div className="flex grow flex-col gap-3 p-5">
+          <div className="flex grow flex-col gap-2 p-5">
             <p className="card-title">{data.title}</p>
             {data.specs && (
-              <p className="card-subtitle line-clamp-3 whitespace-pre-line leading-relaxed">
+              <p className="card-subtitle line-clamp-2 whitespace-pre-line leading-relaxed">
                 {data.specs.replace(/\n{2,}/g, '\n').trim()}
               </p>
             )}
-
-            <div className="mt-auto flex items-end justify-between gap-4 border-t pt-4">
-              <Price rental={data} />
-              {data.available && (
-                <span className="shrink-0 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground">
-                  Lei
-                </span>
-              )}
-            </div>
           </div>
 
-          {data.available && (
-            <Link
-              className="absolute inset-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900"
-              href={`/kontakt?utstyr=${encodeURIComponent(data.title)}`}
-              aria-label={`Lei ${data.title}`}
-            />
-          )}
+          <div className="flex items-center justify-between gap-4 border-t bg-gray-50/70 px-5 py-4">
+            <Price rental={data} />
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition group-hover:gap-2.5">
+              Lei
+              <ArrowRight className="size-4" />
+            </span>
+          </div>
+
+          <Link
+            className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900"
+            href={`/kontakt?utstyr=${encodeURIComponent(data.title)}`}
+            aria-label={`Lei ${data.title}`}
+          />
         </li>
       ))}
     </ul>

@@ -20,13 +20,6 @@ const FALLBACK: Service[] = [
     href: '/utleige',
     cta: 'Sjå katalog',
   },
-  {
-    _id: 'drone',
-    title: 'Droneinspeksjon',
-    description:
-      'Trygg og rask inspeksjon av tak og fasadar utan stillas eller lift.',
-    href: '/kontakt?tag=drone',
-  },
 ]
 
 export default async function ServicesCard() {
@@ -34,7 +27,11 @@ export default async function ServicesCard() {
   const services = data.length > 0 ? data : FALLBACK
 
   return (
-    <ul className="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <ul
+      className={`grid grid-cols-1 gap-4 ${
+        services.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2'
+      }`}
+    >
       {services.map((item) => (
         <li
           key={item._id}

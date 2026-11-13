@@ -12,7 +12,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Heim',
   description:
-    'Vaktmeistertenester, utstyrleige og droneinspeksjon i Osterøy- og Bergenregionen. Raskt og uforpliktande tilbod.',
+    'Vaktmeistertenester og utstyrleige i Osterøy- og Bergenregionen. Raskt og uforpliktande tilbod.',
 }
 
 // "Siste jobbar" visast berre når det finst minst tre prosjekt.
@@ -23,11 +23,7 @@ export default async function Page() {
 
   return (
     <div className="flex flex-col">
-      <div className="py-16 md:py-24">
-        <Section constraint>
-          <Hero />
-        </Section>
-      </div>
+      <Hero />
 
       <Section constraint className="py-20">
         <Services />
@@ -46,7 +42,7 @@ export default async function Page() {
       <CTA
         subtitle="klar til å starte?"
         title="Fortel oss kva du treng — me ordnar resten"
-        description="Enten du treng ein handverkar, leige utstyr eller ein droneinspeksjon."
+        description="Enten du treng ein handverkar eller vil leige utstyr."
       />
     </div>
   )

@@ -95,9 +95,6 @@ export default function ServiceForm() {
             <NativeSelectOption value="vaktmeister">
               Vaktmeisterteneste
             </NativeSelectOption>
-            <NativeSelectOption value="drone">
-              Droneinspeksjon
-            </NativeSelectOption>
             <NativeSelectOption value="anna">Anna</NativeSelectOption>
           </NativeSelect>
           {errors.service && (

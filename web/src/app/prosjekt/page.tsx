@@ -10,7 +10,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Prosjekt',
   description:
-    'Sjå tidlegare arbeid — renovering, vedlikehald og droneinspeksjon i Osterøy og Bergen.',
+    'Sjå tidlegare arbeid — renovering og vedlikehald i Osterøy og Bergen.',
 }
 
 export default async function Page() {

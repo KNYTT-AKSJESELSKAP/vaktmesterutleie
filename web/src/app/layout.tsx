@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: '%s | Vaktmesterutleie',
   },
   description:
-    'Vaktmeistertenester, utstyrleige og droneinspeksjon i Osterøy- og Bergenregionen.',
+    'Vaktmeistertenester og utstyrleige i Osterøy- og Bergenregionen.',
   metadataBase: new URL('https://vaktmesterutleie.no'),
 }
 
