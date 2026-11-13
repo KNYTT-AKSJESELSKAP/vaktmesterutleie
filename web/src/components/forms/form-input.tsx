@@ -1,3 +1,5 @@
+'use client'
+import { AnimatePresence, motion } from 'motion/react'
 import { Field, FieldLabel } from '../ui/field'
 import { Input } from '../ui/input'
 
@@ -21,7 +23,19 @@ export default function FormInput({
     <Field>
       <FieldLabel htmlFor={htmlFor}>{label}</FieldLabel>
       <Input placeholder={placeholder} type={type} {...rest} />
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      <AnimatePresence initial={false}>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="text-xs text-red-500 mt-1"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
     </Field>
   )
 }

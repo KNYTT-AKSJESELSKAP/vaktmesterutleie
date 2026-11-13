@@ -52,7 +52,7 @@ export default function Page() {
           </p>
           <p className="subtitle">
             I tillegg til vaktmeistertenester leiger me ut tilhengarar, stillas,
-            stigar og verktøy, og tilbyr droneinspeksjon av tak og fasadar.
+            stigar og verktøy.
           </p>
           <dl className="mt-2 grid grid-cols-2 gap-4 border-t pt-6">
             {FACTS.map((fact) => (

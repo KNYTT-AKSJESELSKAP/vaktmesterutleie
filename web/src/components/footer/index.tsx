@@ -11,7 +11,7 @@ export default function Footer({ hasProjects }: { hasProjects: boolean }) {
           <div className="flex flex-col gap-4">
             <Logo variant="small" />
             <p className="text-sm text-gray-600 leading-relaxed">
-              Vaktmeistertenester, utstyrsutleige og droneinspeksjon i Osterøy-
+              Vaktmeistertenester og utstyrsutleige i Osterøy-
               og Bergensregionen.
             </p>
             <p className="text-xs text-gray-400">Org.nr: {ORG_NR}</p>
